@@ -4,12 +4,18 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import CalendarTodayIcon from '@mui/icons-material/EventAvailable';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import DoNotDisturbOnIcon from '@mui/icons-material/DoNotDisturbOn';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert'; // For a customizable alert snackbar
+
 
 const Main = ({ startTracking, stopTracking, sendEmail, visible, firstName: firstNameProp }) => {
     const [currentTime, setCurrentTime] = useState(new Date());
     const [startTime, setStartTime] = useState(null);
     const [stopTime, setStopTime] = useState(null);
     const [firstName, setFirstName] = useState(''); // local state for firstName
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+const [snackbarMessage, setSnackbarMessage] = useState('');
+
 
     // Function to update state from localStorage
     const updateDataFromLocalStorage = () => {
@@ -22,6 +28,18 @@ const Main = ({ startTracking, stopTracking, sendEmail, visible, firstName: firs
         }
     };
 
+    const handleSnackbarOpen = (message) => {
+        setSnackbarMessage(message);
+        setSnackbarOpen(true);
+    };
+    
+    const handleSnackbarClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackbarOpen(false);
+    };
+    
     useEffect(() => {
         setFirstName(firstNameProp);
     }, [firstNameProp]);
@@ -54,16 +72,19 @@ const Main = ({ startTracking, stopTracking, sendEmail, visible, firstName: firs
     const handleStartTracking = () => {
         startTracking();
         updateDataFromLocalStorage(); // Refresh data after starting
+        handleSnackbarOpen('Tracking started!');
     };
 
     const handleStopTracking = () => {
         stopTracking();
         updateDataFromLocalStorage(); // Refresh data after stopping
+        handleSnackbarOpen('Tracking stopped!');
     };
 
     const handleSendEmail = () => {
         sendEmail();
         updateDataFromLocalStorage(); // Refresh data after sending
+        handleSnackbarOpen('Email sent!');
     };
 
     // Format time for display
@@ -107,11 +128,11 @@ const Main = ({ startTracking, stopTracking, sendEmail, visible, firstName: firs
                     boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)'
                 }}>
                     <div style={{ display: 'flex', alignItems: 'center', marginTop: '-15px' }}>
-                        <AccountCircleIcon style={{ marginRight: '5px' }} />
+                        <AccountCircleIcon style={{ marginRight: '5px',color: '#00004d' }} />
                         <p style={{ fontSize: 'large' }}>Hi, {firstName}!</p>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <CalendarTodayIcon style={{ marginRight: '5px' }} />
+                        <CalendarTodayIcon style={{ marginRight: '5px', color: '#00004d' }} />
                         <p style={{ margin: '0', fontWeight: 'normal', fontSize: 'medium' }}>{formatTime(currentTime)}</p>
                     </div>
                 </div>
@@ -127,7 +148,7 @@ const Main = ({ startTracking, stopTracking, sendEmail, visible, firstName: firs
                     textAlign: 'left'
                 }}>
                     <div style={{ margin: '5px', display: 'flex', alignItems: 'center' }}>
-                        <AddBoxIcon style={{ marginRight: '5px' }} />
+                        <AddBoxIcon style={{ marginRight: '5px' , color: '#00004d' }} />
                         <p style={{ margin: '0', fontSize: 'medium' }}>Login Time:</p>
                     </div>
                     <p style={{ margin: '0', marginTop: '5px', fontSize: 'medium', marginLeft: '34px' }}>
@@ -135,7 +156,7 @@ const Main = ({ startTracking, stopTracking, sendEmail, visible, firstName: firs
                     </p>
 
                     <div style={{ margin: '5px', marginTop: '10px', display: 'flex', alignItems: 'center' }}>
-                        <DoNotDisturbOnIcon style={{ marginRight: '5px' }} />
+                        <DoNotDisturbOnIcon style={{ marginRight: '5px' , color: '#00004d'}} />
                         <p style={{ margin: '0', fontSize: 'medium' }}>Logout Time:</p>
                     </div>
                     <p style={{ margin: '0', marginTop: '5px', fontSize: 'medium', marginLeft: '34px', marginBottom: '10px' }}>
@@ -149,8 +170,26 @@ const Main = ({ startTracking, stopTracking, sendEmail, visible, firstName: firs
                     <Button variant="contained" onClick={handleSendEmail} style={{ width: '100%', backgroundColor: '#FFD600', borderRadius: '10px', fontSize: '16px', padding: '10px 20px' }}>Send</Button>
                 </div>
             </div>
+
+            <Snackbar open={snackbarOpen} 
+            autoHideDuration={3000} 
+            onClose={handleSnackbarClose}
+            anchorOrigin={{ vertical: 'top', horizontal: 'right' }} // Center the Snackbar
+            >
+
+    <Alert onClose={handleSnackbarClose} severity="info" sx={{ width: '100%' }}>
+        {snackbarMessage}
+    </Alert>
+</Snackbar>
+
         </div>
+
+        
     );
+
+  
+
 };
+
 
 export default Main;
