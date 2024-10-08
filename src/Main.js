@@ -85,6 +85,7 @@ const [snackbarMessage, setSnackbarMessage] = useState('');
         sendEmail();
         updateDataFromLocalStorage(); // Refresh data after sending
         handleSnackbarOpen('Email sent!');
+        window.location.reload();   
     };
 
     // Format time for display

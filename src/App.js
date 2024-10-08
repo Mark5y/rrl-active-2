@@ -196,7 +196,7 @@ const App = () => {
                         fullWidth 
                         style={{ 
                             backgroundColor: isFormValid ? '#333370' : '#9ea9b1', 
-                            color: 'white' 
+                            color: 'white' , borderRadius: '10px', fontSize: '16px', padding: '10px 20px', marginBottom:'15px'
                         }}
                     >
                         Submit
